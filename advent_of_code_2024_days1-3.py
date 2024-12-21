@@ -1,5 +1,4 @@
-import time 
-import math
+import re
 
 #day 1: 
 def day_1_solution(): 
@@ -126,6 +125,7 @@ def day_2_part_2_solution():
 
 def check(arr, is_increasing, remove_idx):
     # print("remove idx: " + str(remove_idx))
+    # Checking if we ignore the invalid value, the levels are still valid or not
     prev = None
     for i in range(len(arr)):
         if i == remove_idx:
@@ -151,10 +151,57 @@ def find_increasing(line):
     # print(increasing > decreasing)
     return increasing > decreasing
 
+#day 3: 
+def day_3_part_1_solution(): 
+    f = open("day_3.txt", "r")
+
+    input_string = ""
+    for line in f: 
+        input_string += line
+
+    # The pattern will create tuples 
+    pattern = r'mul\((\d{1,3}),(\d{1,3})\)'
+    result = re.findall(pattern, input_string)
+    print(type(result[0]))
+    res = 0 
+    for tup in result: 
+        res += int(tup[0]) * int(tup[1])
+    print(str(res))
+
+def day_3_part_2_solution():
+    f = open("day_3.txt", "r")
+
+    input_string = ""
+    for line in f: 
+        input_string += line
+
+    #New pattern with do() and don't() to parse 
+    pattern = r'do\(\)|don\'t\(\)|mul\(\d{1,3},\d{1,3}\)'
+
+    #Second pattern to extract integers from mul(x,y)
+    mul_pattern_extractor = r'\d{1,3}'
+    extracted_functions = re.findall(pattern, input_string)
+    res = 0 
+    is_do = True
+    
+    #iterating through the resulting list  
+    for value in extracted_functions: 
+        if value == "do()": 
+            is_do = True
+        elif value == "don't()":
+            is_do = False
+        else: #mul case
+            if is_do: 
+                multiplication_operands = re.findall(mul_pattern_extractor, value)
+                res += int(multiplication_operands[0]) * int(multiplication_operands[1])
+    print(res)
+
 def main(): 
     #day_1_solution()
     #day_2_solution()
-    day_2_part_2_solution()
+    # day_2_part_2_solution()
+    # day_3_part_1_solution()
+    day_3_part_2_solution()
 
 if __name__ == "__main__":
     main()
